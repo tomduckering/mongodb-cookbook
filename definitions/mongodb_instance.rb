@@ -21,6 +21,20 @@ define :mongodb_instance,
   params[:dbpath] ||= "/var/lib/#{instance_name}"
   params[:logpath] ||= "/var/log/#{instance_name}"
 
+  gems = { "bson" => "1.11.1", "mongo" => "1.11.1"}
+
+  gems.each do |gem_name,gem_version|
+    cookbook_file "#{Chef::Config.file_cache_path}/#{gem_name}-#{gem_version}.gem" do
+      source "#{gem_name}-#{gem_version}.gem"
+    end.run_action(:create)
+
+    # install the mongo ruby gem at compile time to make it globally available
+    chef_gem gem_name do
+      version gem_version
+      source "#{Chef::Config.file_cache_path}/#{gem_name}-#{gem_version}.gem"
+    end
+  end
+
   package 'mongo-10gen-server' do
     action :install
   end
