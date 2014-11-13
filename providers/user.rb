@@ -1,5 +1,3 @@
-
-
 action :create do
   require 'mongo'
   mongo_client = Mongo::MongoClient.new(@new_resource.host, @new_resource.port, :connect_timeout => 15, :slave_ok => true)
