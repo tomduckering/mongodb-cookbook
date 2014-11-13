@@ -1,8 +1,8 @@
-actions :create, :delete
+actions :create
 default_action :create
 
 attribute :username, :name_attribute => true, :kind_of => String, :required => true
-attribute :password, :name_attribute => true, :kind_of => String, :required => true
+attribute :password, :kind_of => String, :required => true
 attribute :database, :kind_of => String, :required => true
 attribute :roles, :kind_of => Array, :required => true
 attribute :is_admin, :kind_of => [TrueClass, FalseClass], :default => false
