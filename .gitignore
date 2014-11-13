@@ -17,3 +17,4 @@ bin/*
 .kitchen.local.yml
 .idea/
 .gems/
+vendor/
