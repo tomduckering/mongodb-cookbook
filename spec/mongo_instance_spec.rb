@@ -57,6 +57,14 @@ describe 'mongodb::basic_instance' do
     resource = chef_run.template('/etc/init.d/mongodb-bungle')
     expect(resource).to notify('service[mongodb-bungle]').to(:restart).delayed
   end
+
+  it 'installs the mongo gem' do
+    expect(chef_run).to install_chef_gem('mongo')
+  end
+
+  it 'installs the bson gem' do
+    expect(chef_run).to install_chef_gem('bson')
+  end
 end
 
 describe 'mongodb::auth_instance' do
