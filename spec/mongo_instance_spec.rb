@@ -15,8 +15,9 @@ describe 'mongodb::basic_instance' do
     expect(chef_run).to create_directory('/var/log/mongodb-bungle')
   end
 
+  init_script = '/etc/init.d/mongodb-bungle'
   it 'sets up the init script' do
-    expect(chef_run).to render_file('/etc/init.d/mongodb-bungle')
+    expect(chef_run).to render_file(init_script)
   end
 
   sysconfig = '/etc/sysconfig/mongodb-bungle'
@@ -54,7 +55,7 @@ describe 'mongodb::basic_instance' do
   end
 
   it 'notifies mongo service to restart when the init file changes' do
-    resource = chef_run.template('/etc/init.d/mongodb-bungle')
+    resource = chef_run.template(init_script)
     expect(resource).to notify('service[mongodb-bungle]').to(:restart).delayed
   end
 
@@ -64,6 +65,14 @@ describe 'mongodb::basic_instance' do
 
   it 'installs the bson gem' do
     expect(chef_run).to install_chef_gem('bson')
+  end
+
+  it 'sets up the init script with reference to the sysconfig file' do
+    expect(chef_run).to render_file(init_script).with_content("SYSCONFIG=\"#{sysconfig}\"")
+  end
+
+  it 'sets up the init script with reference to the service user' do
+    expect(chef_run).to render_file(init_script).with_content("MONGO_USER=mongod")
   end
 end
 

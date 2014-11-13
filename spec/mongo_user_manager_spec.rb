@@ -1,4 +1,5 @@
 require 'rspec'
+require 'mongo'
 require_relative '../libraries/mongo_user_manager'
 
 

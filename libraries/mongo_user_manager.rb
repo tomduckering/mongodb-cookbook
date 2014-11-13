@@ -1,8 +1,8 @@
-require 'mongo'
-
 @running_under_chef = (defined?(Chef) == 'constant')
 
 class MongoUserManager
+
+
 
   def self.log(level,message)
     puts ("#{level}: #{message}")
@@ -54,7 +54,7 @@ class MongoUserManager
   end
 
   def self.create_user(mongo_client,options)
-
+    require 'mongo'
     check(options,[:username,:password,:database,:roles])
 
     admin_db = mongo_client.db('admin')

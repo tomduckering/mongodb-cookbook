@@ -26,6 +26,7 @@ define :mongodb_instance,
   gems.each do |gem_name,gem_version|
     cookbook_file "#{Chef::Config.file_cache_path}/#{gem_name}-#{gem_version}.gem" do
       source "#{gem_name}-#{gem_version}.gem"
+      cookbook 'mongodb'
     end.run_action(:create)
 
     # install the mongo ruby gem at compile time to make it globally available
@@ -73,6 +74,19 @@ define :mongodb_instance,
     key_file = "/etc/#{instance_name}/keyFile"
   end
 
+  template "/etc/init.d/#{instance_name}" do
+    action :create
+    source 'mongodb.init.erb'
+    cookbook 'mongodb'
+    owner 'root'
+    group 'root'
+    mode 0755
+    notifies :restart, "service[#{instance_name}]"
+    variables ({ :instance_name => instance_name,
+                  :service_user => service_user
+              })
+  end
+
   template "/etc/sysconfig/#{instance_name}" do
     action :create
     source 'mongodb.sysconfig.erb'
@@ -94,15 +108,7 @@ define :mongodb_instance,
     notifies :restart, "service[#{instance_name}]", :immediately
   end
 
-  template "/etc/init.d/#{instance_name}" do
-    action :create
-    source 'mongodb.init.erb'
-    cookbook 'mongodb'
-    owner 'root'
-    group 'root'
-    mode 0755
-    notifies :restart, "service[#{instance_name}]"
-  end
+
 
   service instance_name do
     supports :status => true, :restart => true
