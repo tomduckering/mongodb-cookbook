@@ -13,7 +13,7 @@ DAEMON_OPTS="$DAEMON_OPTS --bind_ip <%= @bind_ip %>"
 <% end -%>
 <%= @port ? "DAEMON_OPTS=\"$DAEMON_OPTS --port #{@port}\"" : "" %>
 <%= @dbpath ? "DAEMON_OPTS=\"$DAEMON_OPTS --dbpath #{@dbpath}\"" : "" %>
-<%= @logpath ? "DAEMON_OPTS=\"$DAEMON_OPTS --logpath #{@logpath}\"" : "" %>
+<%= @logdir ? "DAEMON_OPTS=\"$DAEMON_OPTS --logpath #{@logdir}/mongodb.log\"" : "" %>
 <%= @auth ? "DAEMON_OPTS=\"$DAEMON_OPTS --auth\"" : "" %>
 <%= @enable_journalling ? "DAEMON_OPTS=\"$DAEMON_OPTS --journal\"" : "DAEMON_OPTS=\"$DAEMON_OPTS --nojournal\"" %>
 <% if @enable_rest %>

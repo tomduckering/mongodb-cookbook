@@ -19,7 +19,7 @@ define :mongodb_instance,
   service_group = 'mongod'
 
   params[:dbpath] ||= "/var/lib/#{instance_name}"
-  params[:logpath] ||= "/var/log/#{instance_name}"
+  params[:logdir] ||= "/var/log/#{instance_name}"
 
   gems = { "bson" => "1.11.1", "mongo" => "1.11.1"}
 
@@ -40,7 +40,7 @@ define :mongodb_instance,
     action :install
   end
 
-  directory "/var/log/#{instance_name}" do
+  directory params[:logdir] do
     action :create
     owner service_user
     group service_group
@@ -99,7 +99,7 @@ define :mongodb_instance,
         :port => params[:port],
         :dbpath => params[:dbpath],
         :bind_ip => params[:bind_ip],
-        :logpath => params[:logpath],
+        :logdir => params[:logdir],
         :enable_journalling => params[:enable_journalling],
         :replicaset_name => params[:replicaset_name],
         :enable_rest => params[:enable_rest],
