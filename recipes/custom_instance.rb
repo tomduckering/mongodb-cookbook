@@ -1,4 +1,4 @@
-mongodb_instance "george" do
+mongodb_instance 'george' do
   auth true
   port 27018
   dbpath '/var/data/custom-db-path'
