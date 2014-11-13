@@ -21,7 +21,7 @@ define :mongodb_instance,
   params[:dbpath] ||= "/var/lib/#{instance_name}"
   params[:logpath] ||= "/var/log/#{instance_name}"
 
-  package 'mongodb-10gen-server' do
+  package 'mongo-10gen-server' do
     action :install
   end
 

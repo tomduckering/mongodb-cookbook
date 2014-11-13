@@ -8,7 +8,7 @@ describe 'mongodb::basic_instance' do
   end
 
   it 'installs mongodb server' do
-    expect(chef_run).to install_package('mongodb-10gen-server')
+    expect(chef_run).to install_package('mongo-10gen-server')
   end
 
   it 'sets up the log directory' do
