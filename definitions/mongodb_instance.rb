@@ -81,7 +81,7 @@ define :mongodb_instance,
     owner 'root'
     group 'root'
     mode 0755
-    notifies :restart, "service[#{instance_name}]"
+    notifies :restart, "service[#{instance_name}]", :delayed
     variables ({ :instance_name => instance_name,
                   :service_user => service_user
               })
@@ -107,8 +107,6 @@ define :mongodb_instance,
     })
     notifies :restart, "service[#{instance_name}]", :immediately
   end
-
-
 
   service instance_name do
     supports :status => true, :restart => true
