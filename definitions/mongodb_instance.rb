@@ -62,6 +62,7 @@ define :mongodb_instance,
   template "/etc/sysconfig/#{instance_name}" do
     action :create
     source 'mongodb.sysconfig.erb'
+    cookbook 'mongodb'
     owner 'root'
     group 'root'
     mode 0755
@@ -82,6 +83,7 @@ define :mongodb_instance,
   template "/etc/init.d/#{instance_name}" do
     action :create
     source 'mongodb.init.erb'
+    cookbook 'mongodb'
     owner 'root'
     group 'root'
     mode 0755
