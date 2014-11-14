@@ -9,13 +9,9 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
   include MongoHelpers
 
 
-  def self.successful?(result)
-    return result && result['ok'] && result['ok'] == 1
-  end
-
   def self.create_replicaset(mongo_client, options)
 
-    MongoHelpers.check(options,[:replicaset_name,:config_document])
+    MongoHelpers.check(options, [:replicaset_name, :config_document])
 
     raise "Replicaset name (#{options[:replicaset_name]}) does not match config doc name (#{options[:config_document]['_id']})" if options[:replicaset_name] != options[:config_document]['_id']
 
@@ -23,7 +19,7 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
 
     if MongoHelpers.should_we_authenticate?(admin_db)
       LogHelper.info('Authentication is required.')
-      MongoHelpers.check(options,[:admin_user,:admin_password])
+      MongoHelpers.check(options, [:admin_user, :admin_password])
       LogHelper.info("Authenticating as #{options[:admin_user]} to do replicaset initiation...")
       admin_db.authenticate(options[:admin_user], options[:admin_password])
     end
@@ -32,7 +28,7 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
 
     replicaset_status_result = admin_db.command(replicaset_status_command, :check_response => false)
 
-    if successful?(replicaset_status_result)
+    if MongoHelpers.successful?(replicaset_status_result)
       LogHelper.info('There is already a replicaset configured')
       return
     end
@@ -52,8 +48,8 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
 
     replicaset_initiate_result = admin_db.command(configure_replicaset_command, :check_response => false)
 
-    if successful?(replicaset_initiate_result)
-      Chef::Log.info('Sucessfully configured the replicaset')
+    if MongoHelpers.successful?(replicaset_initiate_result)
+      Chef::Log.info('Successfully configured the replicaset')
     elsif replicaset_initiate_result['errmsg'] =~ /need all members up to initiate/
       Chef::Log.info('Trying to configure replicaset but not all members are up. Make sure they are up and try again.')
     else

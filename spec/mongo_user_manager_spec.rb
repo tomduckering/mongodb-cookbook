@@ -16,7 +16,7 @@ describe 'MongoUserManager' do
 
       expect(mongo_client).to receive('db').with('admin').and_return(admin_db)
       expect(admin_db).to receive('[]').with('system.users').and_return([])
-      expect(admin_db).to receive('command').with({'isMaster' => 1}, {:check_response=>false}).and_return({'ok' => 1, 'ismaster' => true})
+      expect(admin_db).to receive('command').with({'isMaster' => 1}, {:check_response => false}).and_return({'ok' => 1, 'ismaster' => true})
       expect(admin_db).to receive('add_user').with('admin', 'admin', false, {:roles => ['admin_role']})
 
       Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options)
@@ -35,8 +35,8 @@ describe 'MongoUserManager' do
       expect(mongo_client).to receive('db').with('admin').and_return(admin_db)
       expect(mongo_client).to receive('db').with('my_data').and_return(target_db)
       expect(admin_db).to receive('[]').with('system.users').and_raise(Mongo::OperationFailure.new("Database command 'count' failed: unauthorized"))
-      expect(admin_db).to receive('authenticate').with('admin','adminpassword')
-      expect(admin_db).to receive('command').with({'isMaster' => 1}, {:check_response=>false}).and_return({'ok' => 1, 'ismaster' => true})
+      expect(admin_db).to receive('authenticate').with('admin', 'adminpassword')
+      expect(admin_db).to receive('command').with({'isMaster' => 1}, {:check_response => false}).and_return({'ok' => 1, 'ismaster' => true})
       expect(target_db).to receive('add_user').with('joebloggs', 'password', false, {:roles => ['normal_role']})
 
       Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options)
@@ -55,11 +55,11 @@ describe 'MongoUserManager' do
       expect(mongo_client).to receive('db').with('admin').and_return(admin_db)
       expect(mongo_client).to receive('db').with('my_data').and_return(target_db)
       expect(admin_db).to receive('[]').with('system.users').and_raise(Mongo::OperationFailure.new("Database command 'count' failed: unauthorized"))
-      expect(admin_db).to receive('authenticate').with('admin','adminpassword')
-      expect(admin_db).to receive('command').with({'isMaster' => 1}, {:check_response=>false}).and_return({'ok' => 1, 'ismaster' => false})
+      expect(admin_db).to receive('authenticate').with('admin', 'adminpassword')
+      expect(admin_db).to receive('command').exactly(2).with({'isMaster' => 1}, {:check_response => false}).and_return({'ok' => 1, 'ismaster' => false})
       expect(target_db).to_not receive('add_user')
 
-      Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options)
+      Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options, 2)
     end
 
 

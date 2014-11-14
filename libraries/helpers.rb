@@ -9,7 +9,11 @@ module MongoHelpers
     end
   end
 
-  def MongoHelpers.check(options,required_options)
+  def MongoHelpers.successful?(result)
+    return result && result['ok'] && result['ok'] == 1
+  end
+
+  def MongoHelpers.check(options, required_options)
     required_options.each do |required_option|
       raise "Missing option #{required_option}" unless options.include?(required_option)
     end
@@ -21,11 +25,15 @@ module MongoHelpers
     replica_set_initiate_command
   end
 
-
-  def MongoHelpers.can_we_create_users?(admin_db)
-    ismaster_command = build_command('isMaster',1)
-    ismaster_result = admin_db.command(ismaster_command,:check_response => false)
-
-    ismaster_result['ok'] == 1 and ismaster_result['ismaster'] == true
+  def MongoHelpers.can_we_create_users?(admin_db, try_times)
+    ismaster_command = build_command('isMaster', 1)
+    for i in 1..try_times do
+      ismaster_result = admin_db.command(ismaster_command, :check_response => false)
+      if successful?(ismaster_result) and ismaster_result['ismaster'] == true
+        return true
+      end
+      sleep 0.5
+    end
+    return false
   end
 end
