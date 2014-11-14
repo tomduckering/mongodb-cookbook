@@ -1,10 +1,12 @@
 require_relative 'logger'
+require_relative 'helpers'
 
 class Chef::ResourceDefinitionList::MongoReplicasetManager
 
   require 'json'
 
   include LogHelper
+  include MongoHelpers
 
   def self.build_command(command, replica_set_config = nil)
     replica_set_initiate_command = BSON::OrderedHash.new
@@ -17,7 +19,19 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
   end
 
   def self.create_replicaset(mongo_client, options)
+
+    MongoHelpers.check(options,[:replicaset_name,:config_document])
+
+    raise "Replicaset name (#{options[:replicaset_name]}) does not match config doc name (#{options[:config_document]['_id']})" if options[:replicaset_name] != options[:config_document]['_id']
+
     admin_db = mongo_client.db('admin')
+
+    if MongoHelpers.should_we_authenticate?(admin_db)
+      LogHelper.info('Authentication is required.')
+      MongoHelpers.check(options,[:admin_user,:admin_password])
+      LogHelper.info("Authenticating as #{options[:admin_user]} to do replicaset initiation...")
+      admin_db.authenticate(options[:admin_user], options[:admin_password])
+    end
 
     replicaset_status_command = build_command('replSetGetStatus')
 
