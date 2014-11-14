@@ -36,7 +36,7 @@ end
 #bounce them to create users
 instance_names.each do |instance|
   service "mongodb-#{instance}" do
-    action :restart, :immediately
+    action :restart
   end
 end
 
