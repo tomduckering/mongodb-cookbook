@@ -30,5 +30,5 @@ mongodb_replicaset 'wildwest' do
   host 'localhost'
   port 27017
   admin_user 'admin'
-  admin_password 'admin'
+  admin_password 'adminpassword'
 end
