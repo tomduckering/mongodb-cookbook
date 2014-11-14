@@ -3,6 +3,7 @@ instance_names = %w(good bad ugly)
 instance_names.each_with_index do |instance_name,index|
   mongodb_instance instance_name do
     port 27017 + index
+    replicaset_name 'wildwest'
   end
 end
 
