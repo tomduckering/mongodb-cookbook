@@ -1,41 +1,8 @@
+require_relative 'logger.rb'
+
 class Chef::ResourceDefinitionList::MongoUserManager
 
-  def self.running_under_chef
-    (defined?(Chef) == 'constant')
-  end
-
-  def self.log(level,message)
-    puts ("#{level}: #{message}")
-  end
-  private_class_method :log
-
-  def self.info(message)
-    log("info",message) unless running_under_chef
-    Chef::Log.info(message) if running_under_chef
-  end
-  private_class_method :info
-
-  def self.warn(message)
-    log("warn",message) unless running_under_chef
-    Chef::Log.warn(message) if running_under_chef
-  end
-
-  private_class_method :warn
-
-  def self.error(message)
-    log("error",message) unless running_under_chef
-    Chef::Log.error(message) if running_under_chef
-  end
-
-  private_class_method :error
-
-  def self.fatal(message)
-    log("fatal",message) unless running_under_chef
-    Chef::Log.fatal(message) if running_under_chef
-  end
-
-  private_class_method :fatal
-
+  include LogHelper
 
   def self.should_we_authenticate?(admin_db)
     begin
@@ -62,13 +29,13 @@ class Chef::ResourceDefinitionList::MongoUserManager
 
     if should_we_authenticate?(admin_db)
       check(options,[:admin_user,:admin_password])
-      info("Authenticating as #{options[:admin_user]} to do user creation...")
+      LogHelper.info("Authenticating as #{options[:admin_user]} to do user creation...")
       admin_db.authenticate(options[:admin_user], options[:admin_password])
     else
-      info('It seems like this database has no users yet - skipping initial authentication')
+      LogHelper.info('It seems like this database has no users yet - skipping initial authentication')
     end
 
-    info("Creating user: #{options[:username]}, read_only: #{options[:read_only]}, roles: #{options[:roles].to_s} in database: #{options[:database]}")
+    LogHelper.info("Creating user: #{options[:username]}, read_only: #{options[:read_only]}, roles: #{options[:roles].to_s} in database: #{options[:database]}")
     target_db.add_user(options[:username], options[:password], options[:read_only], :roles => options[:roles])
 
   end
