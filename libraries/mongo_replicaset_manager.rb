@@ -8,11 +8,6 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
   include LogHelper
   include MongoHelpers
 
-  def self.build_command(command, replica_set_config = nil)
-    replica_set_initiate_command = BSON::OrderedHash.new
-    replica_set_initiate_command[command] = replica_set_config
-    replica_set_initiate_command
-  end
 
   def self.successful?(result)
     return result && result['ok'] && result['ok'] == 1
@@ -33,7 +28,7 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
       admin_db.authenticate(options[:admin_user], options[:admin_password])
     end
 
-    replicaset_status_command = build_command('replSetGetStatus')
+    replicaset_status_command = MongoHelpers.build_command('replSetGetStatus')
 
     replicaset_status_result = admin_db.command(replicaset_status_command, :check_response => false)
 
@@ -53,7 +48,7 @@ class Chef::ResourceDefinitionList::MongoReplicasetManager
 
     LogHelper.info(JSON.pretty_generate(replicaset_config_doc))
 
-    configure_replicaset_command = build_command('replSetInitiate', replicaset_config_doc)
+    configure_replicaset_command = MongoHelpers.build_command('replSetInitiate', replicaset_config_doc)
 
     replicaset_initiate_result = admin_db.command(configure_replicaset_command, :check_response => false)
 

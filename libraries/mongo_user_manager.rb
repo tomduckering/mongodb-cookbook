@@ -24,9 +24,12 @@ class Chef::ResourceDefinitionList::MongoUserManager
       LogHelper.info('It seems like this database has no users yet - skipping initial authentication')
     end
 
-    LogHelper.info("Creating user: #{options[:username]}, read_only: #{options[:read_only]}, roles: #{options[:roles].to_s} in database: #{options[:database]}")
-    target_db.add_user(options[:username], options[:password], options[:read_only], :roles => options[:roles])
-
+    if MongoHelpers.can_we_create_users?(admin_db)
+      LogHelper.info("Creating user: #{options[:username]}, read_only: #{options[:read_only]}, roles: #{options[:roles].to_s} in database: #{options[:database]}")
+      target_db.add_user(options[:username], options[:password], options[:read_only], :roles => options[:roles])
+    else
+      LogHelper.warn("Failed to create #{options[:username]} - we can't create users on this instance because it's not a master (i.e. standalone instance or primary in a replicaset)")
+    end
   end
 
 end
