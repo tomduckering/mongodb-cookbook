@@ -62,7 +62,7 @@ class Chef::ResourceDefinitionList::MongoUserManager
 
     if should_we_authenticate?(admin_db)
       check(options,[:admin_user,:admin_password])
-      info("Authenticating as #{options[:admin_user]}")
+      info("Authenticating as #{options[:admin_user]} to do user creation...")
       admin_db.authenticate(options[:admin_user], options[:admin_password])
     else
       info('It seems like this database has no users yet - skipping initial authentication')
