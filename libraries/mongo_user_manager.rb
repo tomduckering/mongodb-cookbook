@@ -1,8 +1,8 @@
-@running_under_chef = (defined?(Chef) == 'constant')
+class Chef::ResourceDefinitionList::MongoUserManager
 
-class MongoUserManager
-
-
+  def self.running_under_chef
+    (defined?(Chef) == 'constant')
+  end
 
   def self.log(level,message)
     puts ("#{level}: #{message}")
@@ -10,28 +10,28 @@ class MongoUserManager
   private_class_method :log
 
   def self.info(message)
-    log("info",message) unless @running_under_chef
-    Chef::Log.info(message) if @running_under_chef
+    log("info",message) unless running_under_chef
+    Chef::Log.info(message) if running_under_chef
   end
   private_class_method :info
 
   def self.warn(message)
-    log("warn",message) unless @running_under_chef
-    Chef::Log.warn(message) if @running_under_chef
+    log("warn",message) unless running_under_chef
+    Chef::Log.warn(message) if running_under_chef
   end
 
   private_class_method :warn
 
   def self.error(message)
-    log("error",message) unless @running_under_chef
-    Chef::Log.error(message) if @running_under_chef
+    log("error",message) unless running_under_chef
+    Chef::Log.error(message) if running_under_chef
   end
 
   private_class_method :error
 
   def self.fatal(message)
-    log("fatal",message) unless @running_under_chef
-    Chef::Log.fatal(message) if @running_under_chef
+    log("fatal",message) unless running_under_chef
+    Chef::Log.fatal(message) if running_under_chef
   end
 
   private_class_method :fatal

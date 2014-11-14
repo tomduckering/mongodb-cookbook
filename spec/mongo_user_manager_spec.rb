@@ -18,7 +18,7 @@ describe 'MongoUserManager' do
       expect(admin_db).to receive('[]').with('system.users').and_return([])
       expect(admin_db).to receive('add_user').with('admin', 'admin', false, {:roles => ['admin_role']})
 
-      MongoUserManager.create_user(mongo_client, options)
+      Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options)
     end
 
     it 'calls the mongo client correctly when creating a user when there is already an admin user' do
@@ -37,7 +37,7 @@ describe 'MongoUserManager' do
       expect(admin_db).to receive('authenticate').with('admin','adminpassword')
       expect(target_db).to receive('add_user').with('joebloggs', 'password', false, {:roles => ['normal_role']})
 
-      MongoUserManager.create_user(mongo_client, options)
+      Chef::ResourceDefinitionList::MongoUserManager.create_user(mongo_client, options)
     end
 
 
