@@ -76,62 +76,7 @@ describe 'mongodb::basic_instance' do
   end
 end
 
-describe 'mongodb::auth_instance' do
-  let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
-
-  it 'turns auth on in the config file' do
-    expect(chef_run).to render_file('/etc/sysconfig/mongodb-zippy').with_content(/--auth/)
-  end
-end
-
-describe 'mongodb::custom_instance' do
-  let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
-
-  sysconfig = '/etc/sysconfig/mongodb-george'
-  it 'turns auth on in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--auth')
-  end
-
-  it 'sets custom port in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--port 27018')
-  end
-
-  it 'sets custom dbpath in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--dbpath /var/data/custom-db-path')
-  end
-
-  it 'sets the bind ip address in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--bind_ip 1.2.3.4')
-  end
-
-  it 'sets the log path in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--logpath /custom/log/path')
-  end
-
-  it 'sets journalling option on in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--journal')
-  end
-
-  it 'sets the rest option on in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--rest')
-  end
-end
-
-describe "mongodb::replicaset_instance" do
-  let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
-
-  it 'sets the replSet option in the config file' do
-    expect(chef_run).to render_file('/etc/sysconfig/mongodb-rod').with_content('--replSet zippo')
-  end
-
-  it 'sets the keyFile option in the config file' do
-    expect(chef_run).to render_file('/etc/sysconfig/mongodb-rod').with_content('--keyFile /etc/mongodb-rod/keyFile')
-  end
-
-  it 'sets the content of the keyFile' do
-    expect(chef_run).to render_file('/etc/mongodb-rod/keyFile').with_content('HoracedontbenaughtyandpassGeoffreythebookOhImsorryGeoffreybutsometimesHoraceisverynaughtyIllpassyouthestorybook')
-  end
 
 
 
-end
+
