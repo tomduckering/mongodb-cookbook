@@ -1,18 +1,13 @@
 instance_names = %w(good bad ugly)
 
+replicaset_name = nil
+#replicaset_name = 'wildwest'
+
 instance_names.each_with_index do |instance_name, index|
   mongodb_instance instance_name do
     port 27017 + index
-    replicaset_name 'wildwest'
+    replicaset_name replicaset_name
     auth true
-  end
-
-  mongodb_user 'admin' do
-    password 'adminpassword'
-    database 'admin'
-    roles %w(userAdminAnyDatabase dbAdminAnyDatabase clusterAdmin)
-    admin_user 'admin'
-    admin_password 'adminpassword'
   end
 end
 
@@ -25,39 +20,24 @@ config = {
     ]
 }
 
-mongodb_replicaset 'wildwest' do
-  config_document config
-  host 'localhost'
-  port 27017
-  admin_user 'admin'
-  admin_password 'adminpassword'
-end
-
-#bounce them to create users
-instance_names.each do |instance|
-  service "mongodb-#{instance}" do
-    action :restart
-  end
-end
-
-
 mongodb_user 'admin' do
   password 'adminpassword'
   database 'admin'
   roles %w(userAdminAnyDatabase dbAdminAnyDatabase clusterAdmin)
   admin_user 'admin'
   admin_password 'adminpassword'
+  host 'localhost'
   port 27017
 end
 
-# if we were to create for multiple servers
-# instance_names.each_with_index do |instance_name,index|
-#   mongodb_user 'admin' do
-#     password 'adminpassword'
-#     database 'admin'
-#     roles %w(userAdminAnyDatabase dbAdminAnyDatabase clusterAdmin)
-#     admin_user 'admin'
-#     admin_password 'adminpassword'
-#     port 27017 + index
-#   end
-# end
+mongodb_replicaset replicaset_name do
+  config_document config
+  host 'localhost'
+  port 27017
+  admin_user 'admin'
+  admin_password 'adminpassword'
+  only_if { replicaset_name }
+  instance_names.each do |instance|
+    notifies :restart, "service[mongodb-#{instance}]", :immediately
+  end
+end
