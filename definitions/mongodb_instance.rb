@@ -45,6 +45,16 @@ define :mongodb_instance,
     action :install
   end
 
+  # This is a bit of a hack to disable Mongo's automatic startup
+  execute 'chkconfig --del mongod' do
+    only_if 'chkconfig --list mongod'
+  end
+
+  # and remove its default init script and.
+  file '/etc/init.d/mongod' do
+    action :delete
+  end
+
   directory params[:logdir] do
     action :create
     owner service_user

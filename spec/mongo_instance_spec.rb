@@ -74,6 +74,14 @@ describe 'mongodb::basic_instance' do
   it 'sets up the init script with reference to the service user' do
     expect(chef_run).to render_file(init_script).with_content("MONGO_USER=mongod")
   end
+
+  it 'removes the original init script for mongo because we place customised versions' do
+    expect(chef_run).to delete_file('/etc/init.d/mongod')
+  end
+
+  it 'removes the chkconfig for the original mongod service because we don\'t want it to start up ever!!' do
+    expect(chef_run).to run_execute('chkconfig --del mongod')
+  end
 end
 
 
