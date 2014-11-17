@@ -1,4 +1,5 @@
 define :mongodb_instance,
+       :instance_name => nil,
        :port => 27017,
        :dbpath => nil,
        :bind_ip => nil,
@@ -8,6 +9,10 @@ define :mongodb_instance,
        :replicaset_name => nil,
        :shared_key => "CHANGETHISKEY",
        :auth => false do
+
+  if params[:instance_name]
+    params[:name] = params[:instance_name]
+  end
 
   if params[:name] == "mongodb"
     instance_name = params[:name]
@@ -21,9 +26,9 @@ define :mongodb_instance,
   params[:dbpath] ||= "/var/lib/#{instance_name}"
   params[:logdir] ||= "/var/log/#{instance_name}"
 
-  gems = { "bson" => "1.11.1", "mongo" => "1.11.1"}
+  gems = {"bson" => "1.11.1", "mongo" => "1.11.1"}
 
-  gems.each do |gem_name,gem_version|
+  gems.each do |gem_name, gem_version|
     cookbook_file "#{Chef::Config.file_cache_path}/#{gem_name}-#{gem_version}.gem" do
       source "#{gem_name}-#{gem_version}.gem"
       cookbook 'mongodb'
@@ -82,9 +87,9 @@ define :mongodb_instance,
     group 'root'
     mode 0755
     notifies :restart, "service[#{instance_name}]", :delayed
-    variables ({ :instance_name => instance_name,
-                  :service_user => service_user
-              })
+    variables ({:instance_name => instance_name,
+                :service_user => service_user
+    })
   end
 
   template "/etc/sysconfig/#{instance_name}" do
