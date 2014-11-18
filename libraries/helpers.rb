@@ -36,7 +36,7 @@ module MongoHelpers
   end
 
   def MongoHelpers.can_we_create_users?(admin_db, try_times)
-    ismaster_command = build_command('isMaster', 1)
+    ismaster_command = build_command('isMaster')
     for i in 1..try_times do
       ismaster_result = admin_db.command(ismaster_command, :check_response => false)
       if successful?(ismaster_result) and ismaster_result['ismaster'] == true
