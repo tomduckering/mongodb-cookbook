@@ -20,8 +20,18 @@ module MongoHelpers
   end
 
   def MongoHelpers.build_command(command, replica_set_config = nil)
+    require 'json'
+
+    if replica_set_config
+      #something in the BSON ordered hash mutates the object, and chef is not happy with that.
+      #We do a "clone" of the object to avoid that...
+      arg = JSON.parse(replica_set_config.to_json)
+    else
+      arg = nil
+    end
+
     replica_set_initiate_command = BSON::OrderedHash.new
-    replica_set_initiate_command[command] = replica_set_config
+    replica_set_initiate_command[command] = arg
     replica_set_initiate_command
   end
 
