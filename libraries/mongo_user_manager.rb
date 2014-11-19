@@ -7,7 +7,7 @@ class Chef::ResourceDefinitionList::MongoUserManager
   include MongoHelpers
 
 
-  def self.create_user(mongo_client, options, try_times = 40)
+  def self.create_user(mongo_client, options, try_times = 80)
     require 'mongo'
     MongoHelpers.check(options, [:username, :password, :database, :roles])
 
