@@ -38,7 +38,7 @@ describe 'mongodb::basic_instance' do
   end
 
   it 'sets journalling to be off in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--nojournal')
+    expect(chef_run).to render_file(sysconfig).with_content('--journal')
   end
 
   it 'sets DBPATH environment variable in the config file' do
