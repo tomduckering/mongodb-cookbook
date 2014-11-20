@@ -6,7 +6,7 @@ ulimit -n 64000
 # DAEMON="<%= @daemon_path %>"
 # NAME="<%= @name %>"
 
-DAEMON_OPTS="--syslog --syslogFacility 'local7'"
+DAEMON_OPTS="--syslog"
 
 <% if @bind_ip -%>
 DAEMON_OPTS="$DAEMON_OPTS --bind_ip <%= @bind_ip %>"

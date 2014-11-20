@@ -21,7 +21,7 @@ describe 'mongodb::custom_instance' do
   end
 
   it 'sets the log to use syslog facilities' do
-    expect(chef_run).to render_file(sysconfig).with_content('--syslog --syslogFacility \'local7\'')
+    expect(chef_run).to render_file(sysconfig).with_content('--syslog')
   end
 
   it 'sets journalling option on in the config file' do
