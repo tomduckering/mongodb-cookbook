@@ -89,7 +89,7 @@ describe 'mongodb::basic_instance' do
 
   it 'rsyslog config file notifies rsyslog to restart' do
     collectd_config_file = chef_run.template('/etc/rsyslog.d/mongodb.conf')
-    expect(collectd_config_file).to notify('service[rsyslog]').to(:restart).delayed
+    expect(collectd_config_file).to notify('service[rsyslog]').to(:restart).immediately
   end
 
   it 'creates logrotate file' do

@@ -45,6 +45,32 @@ define :mongodb_instance,
     action :install
   end
 
+  template '/etc/rsyslog.d/mongodb.conf' do
+    action :create
+    source 'rsyslog.conf.erb'
+    cookbook 'mongodb'
+    owner 'root'
+    group 'root'
+    mode 0755
+    notifies :restart, 'service[rsyslog]', :immediately
+    variables ({:service_user => service_user,
+                :service_group => service_group
+    })
+  end
+
+  cookbook_file 'logrotate.conf' do
+    action :create
+    path '/etc/logrotate.d/mongodb.conf'
+    cookbook 'mongodb'
+    owner 'root'
+    group 'root'
+    mode 0755
+  end
+
+  service 'rsyslog' do
+    action :nothing
+  end
+
   # This is a bit of a hack to disable Mongo's automatic startup
   execute 'chkconfig --del mongod' do
     only_if 'chkconfig --list mongod'
@@ -121,32 +147,6 @@ define :mongodb_instance,
         :key_file => key_file
     })
     notifies :restart, "service[#{instance_name}]", :immediately
-  end
-
-  template '/etc/rsyslog.d/mongodb.conf' do
-    action :create
-    source 'rsyslog.conf.erb'
-    cookbook 'mongodb'
-    owner 'root'
-    group 'root'
-    mode 0755
-    notifies :restart, 'service[rsyslog]', :delayed
-    variables ({:service_user => service_user,
-                :service_group => service_group
-    })
-  end
-
-  cookbook_file 'logrotate.conf' do
-    action :create
-    path '/etc/logrotate.d/mongodb.conf'
-    cookbook 'mongodb'
-    owner 'root'
-    group 'root'
-    mode 0755
-  end
-
-  service 'rsyslog' do
-    action :nothing
   end
 
   service instance_name do
