@@ -82,6 +82,21 @@ describe 'mongodb::basic_instance' do
   it 'removes the chkconfig for the original mongod service because we don\'t want it to start up ever!!' do
     expect(chef_run).to run_execute('chkconfig --del mongod')
   end
+
+  it 'creates rsyslog file' do
+    expect(chef_run).to render_file('/etc/rsyslog.d/mongodb.conf')
+  end
+
+  it 'rsyslog config file notifies rsyslog to restart' do
+    collectd_config_file = chef_run.template('/etc/rsyslog.d/mongodb.conf')
+    expect(collectd_config_file).to notify('service[rsyslog]').to(:restart).delayed
+  end
+
+  it 'creates logrotate file' do
+    expect(chef_run).to render_file('/etc/logrotate.d/mongodb.conf')
+  end
+
+
 end
 
 

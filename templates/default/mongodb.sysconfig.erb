@@ -6,14 +6,13 @@ ulimit -n 64000
 # DAEMON="<%= @daemon_path %>"
 # NAME="<%= @name %>"
 
-DAEMON_OPTS=""
+DAEMON_OPTS="--syslog --syslogFacility 'local7'"
 
 <% if @bind_ip -%>
 DAEMON_OPTS="$DAEMON_OPTS --bind_ip <%= @bind_ip %>"
 <% end -%>
 <%= @port ? "DAEMON_OPTS=\"$DAEMON_OPTS --port #{@port}\"" : "" %>
 <%= @dbpath ? "DAEMON_OPTS=\"$DAEMON_OPTS --dbpath #{@dbpath}\"" : "" %>
-<%= @logdir ? "DAEMON_OPTS=\"$DAEMON_OPTS --logpath #{@logdir}/mongodb.log\"" : "" %>
 <%= @auth ? "DAEMON_OPTS=\"$DAEMON_OPTS --auth\"" : "" %>
 <%= @enable_journalling ? "DAEMON_OPTS=\"$DAEMON_OPTS --journal\"" : "DAEMON_OPTS=\"$DAEMON_OPTS --nojournal\"" %>
 <% if @enable_rest %>

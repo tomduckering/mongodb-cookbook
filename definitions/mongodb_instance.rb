@@ -123,6 +123,32 @@ define :mongodb_instance,
     notifies :restart, "service[#{instance_name}]", :immediately
   end
 
+  template '/etc/rsyslog.d/mongodb.conf' do
+    action :create
+    source 'rsyslog.conf.erb'
+    cookbook 'mongodb'
+    owner 'root'
+    group 'root'
+    mode 0755
+    notifies :restart, 'service[rsyslog]', :delayed
+    variables ({:service_user => service_user,
+                :service_group => service_group
+    })
+  end
+
+  cookbook_file 'logrotate.conf' do
+    action :create
+    path '/etc/logrotate.d/mongodb.conf'
+    cookbook 'mongodb'
+    owner 'root'
+    group 'root'
+    mode 0755
+  end
+
+  service 'rsyslog' do
+    action :nothing
+  end
+
   service instance_name do
     supports :status => true, :restart => true
     action [:enable, :start]

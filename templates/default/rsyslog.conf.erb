@@ -1,0 +1,8 @@
+# This file was created by the mongodb cookbook.
+$umask 0000
+$FileOwner <%= @service_user %>
+$FileGroup <%= @service_group %>
+$FileCreateMode 0644
+
+:programname, startswith, "mongod." /var/log/mongodb/syslog.log
+:programname, startswith, "mongos." /var/log/mongodb/syslog.log

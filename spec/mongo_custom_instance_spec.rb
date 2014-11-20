@@ -20,8 +20,8 @@ describe 'mongodb::custom_instance' do
     expect(chef_run).to render_file(sysconfig).with_content('--bind_ip 1.2.3.4')
   end
 
-  it 'sets the log path in the config file' do
-    expect(chef_run).to render_file(sysconfig).with_content('--logpath /custom/log/path')
+  it 'sets the log to use syslog facilities' do
+    expect(chef_run).to render_file(sysconfig).with_content('--syslog --syslogFacility \'local7\'')
   end
 
   it 'sets journalling option on in the config file' do
