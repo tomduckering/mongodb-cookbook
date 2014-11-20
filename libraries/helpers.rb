@@ -25,7 +25,7 @@ module MongoHelpers
     if replica_set_config
       #something in the BSON ordered hash mutates the object, and chef is not happy with that.
       #We do a "clone" of the object to avoid that...
-      arg = JSON.parse(replica_set_config.to_json)
+      arg = JSON.parse({'args' => replica_set_config}.to_json)['args']
     else
       arg = nil
     end
@@ -36,7 +36,7 @@ module MongoHelpers
   end
 
   def MongoHelpers.can_we_create_users?(admin_db, try_times)
-    ismaster_command = build_command('isMaster')
+    ismaster_command = build_command('isMaster', 1)
     for i in 1..try_times do
       ismaster_result = admin_db.command(ismaster_command, :check_response => false)
       if successful?(ismaster_result) and ismaster_result['ismaster'] == true
